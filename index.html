@@ -1,0 +1,121 @@
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Impossible Password</title>
+    <style>
+        body {
+            background:
+                linear-gradient(to top, #4682b4, #f0ffff),
+                radial-gradient(circle,#4682b4 20%, transparent 20%) center center;
+            background-size: 100% 100%, 40px 40px;
+            background-repeat: no-repeat, repeat;
+            margin: 0;
+            padding: 0;
+        }
+
+        .rectangle {
+            background-color: lightcyan;
+            color: black;
+            width: 750px;
+            height: 450px;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .moving-title {
+            position: absolute;
+            top: 10px; 
+            left: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        input {
+            width: calc(100% - 20px);
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="rectangle">
+        <h2 class="moving-title" id="moving-title"> Impossible Password</h2>
+        <br><br>
+        <h3>Password must contain:</h3>
+        <ul>
+            <h5>At least 50 characters.</h5>
+            <h5>Must contain at least 10 digits.</h5>
+            <h5>Must contain at least 5 special symbols (!@#$%^&*).</h5>
+            <h5>Must contain at least 15 uppercase letters.</h5>
+            <h5>Must be a palindrome.</h5>
+        </ul>
+        <input type="text" id="password" placeholder="Enter Your Password Here">
+        <button onclick="checkPassword()">Check your password</button>
+        <p class="error" id="error"></p>
+    </div>
+
+    <script>
+        const title = document.getElementById("moving-title");
+        const container = document.querySelector(".rectangle");
+
+        let direction = 1;
+        let position = 0;
+
+        function animateTitle() {
+            const titleWidth = title.offsetWidth; 
+            const containerWidth = container.offsetWidth;
+
+            position += direction * 2;
+
+            if (position <= 0) {
+                direction = 1;
+            } else if (position + titleWidth >= containerWidth) {
+                direction = -1;
+            }
+
+            title.style.left = position + "px";
+
+            requestAnimationFrame(animateTitle);
+        }
+
+        animateTitle();
+
+        function isPalindrome(str) {
+            return str === str.split('').reverse().join('');
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('password').value;
+            const errorfield = document.getElementById('error');
+            let errors = [];
+
+            if (password.length < 50) {
+                errors.push("The password must contain at least 50 characters.");
+            }
+            if ((password.match(/\d/g) || []).length < 10) {
+                errors.push("The password must contain at least 10 digits.");
+            }
+            if ((password.match(/[!@#$%^&*]/g) || []).length < 5) {
+                errors.push("The password must contain at least 5 special characters (!@#$%^&*).");
+            }
+            if ((password.match(/[A-Z]/g) || []).length < 15) {
+                errors.push("The password must contain at least 15 uppercase letters.");
+            }
+            if (!isPalindrome(password)) {
+                errors.push("The password must be a palindrome.");
+            }
+
+            if (errors.length > 0) {
+                errorfield.innerHTML = errors.join("<br>");
+            } else {
+                errorfield.innerHTML = "Congratulations! You have created an impossible password!";
+                errorfield.style.color = "green";
+            }
+        }
+    </script>
+</body>
+</html>
